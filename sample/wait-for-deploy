@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby
+require "net/http"
+trap(:SIGINT){ exit 0 }
+
+class RemoteFileMonitor
+  def initialize(domain, path)
+    @domain = domain
+    @path = path
+  end
+
+  def wait_for_change
+    @last = fetch
+    sleep 2 until changed?
+  end
+
+protected
+  def fetch
+    Net::HTTP.get(@domain, @path)
+  end
+
+  def changed?
+    new = fetch
+    return false if @last == new
+    @last = new
+    true
+  end
+end
+
+unless domain = ARGV.first
+  warn "Usage: #{$0} example.com"
+  exit 1
+end
+
+path = ARGV[1] || "/release.txt"
+
+RemoteFileMonitor.new(domain, path).wait_for_change
