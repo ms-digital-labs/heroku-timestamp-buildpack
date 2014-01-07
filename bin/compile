@@ -1,0 +1,2 @@
+mkdir -p $1/public
+date > $1/public/release.txt

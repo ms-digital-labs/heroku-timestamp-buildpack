@@ -1,0 +1,8 @@
+cd $1
+if [ -d public ]
+then
+  echo timestamp
+else
+  echo "The timestamp build pack requires a public dir." >&2
+  exit 1
+fi
